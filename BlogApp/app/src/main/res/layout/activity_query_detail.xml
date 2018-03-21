@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:padding="16dp"
+    tools:context="com.example.reviewapp.reviewapp.activities.QueryDetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/firstLayout"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="50dp">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:inputType="textMultiLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLength="70"
+            android:gravity="top|left"
+            android:maxLines="3"
+            android:textSize="20sp"
+            android:hint="Title"/>
+
+
+        <TextView
+            android:id="@+id/queryText"
+            android:inputType="textMultiLine"
+            android:minLines="1"
+            android:layout_width="match_parent"
+            android:maxLength="280"
+            android:layout_height="wrap_content"
+            android:gravity="top|left"
+            android:maxLines="5"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:hint="Description"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:id="@+id/btn_vote"
+            android:layout_gravity="right"
+            android:text="Upvote" />
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/queryAnswer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_marginBottom="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
+</RelativeLayout>

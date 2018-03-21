@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">BlogApp</string>
+    <item name="visible" type="id"/>
+    <item name="masked" type="id"/>
+    <string name="title_activity_main_swipe">MainSwipeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+</resources>

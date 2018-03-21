@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="50dp">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/descLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/queryAnswerText"
+                android:inputType="textMultiLine"
+                android:minLines="1"
+                android:layout_width="match_parent"
+                android:maxLength="280"
+                android:layout_height="wrap_content"
+                android:gravity="top|left"
+                android:maxLines="5"
+                android:hint="Description"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/saveAnswer"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:text="Save"
+            android:clickable="true"
+            android:background="#263238"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_margin="30dp"
+            android:textSize="20sp"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>
