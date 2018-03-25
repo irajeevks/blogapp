@@ -83,9 +83,12 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     progressDialog.dismiss();
                     UserModel userModel = dataSnapshot.getValue(UserModel.class);
-                    ApplicationController.getInstance().setUserModel(userModel);
-                    startActivity(new Intent(ProfileActivity.this, MainSwipeActivity.class));
-                    finish();
+
+                    if(userModel != null){
+                        ApplicationController.getInstance().setUserModel(userModel);
+                        startActivity(new Intent(ProfileActivity.this, MainSwipeActivity.class));
+                        finish();
+                    }
                 }
 
                 @Override

@@ -8,6 +8,7 @@
     android:focusableInTouchMode="true"
     android:padding="16dp"
     android:id="@+id/activity_login"
+    android:background="@color/colorPrimary"
     tools:context="com.example.reviewapp.reviewapp.activities.LoginActivity">
 
 

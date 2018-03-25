@@ -156,6 +156,7 @@ public class QueriesFragment extends Fragment{
                 Log.d("SnapShot Value ",dataSnapshot.getChildren().toString());
                 for (DataSnapshot querySnapshot: dataSnapshot.getChildren())
                 {
+
                     QueryModel query = querySnapshot.getValue(QueryModel.class);
                     query.setKey(querySnapshot.getKey());
                     if(userId.equals(query.getUserid())){

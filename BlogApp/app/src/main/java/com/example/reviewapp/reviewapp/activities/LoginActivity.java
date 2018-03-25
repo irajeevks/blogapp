@@ -74,12 +74,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //if getCurrentUser does not returns null
         if(auth.getCurrentUser() != null){
+            //TODO : Get Data From DB
             //that means user is already logged in
+            //open profile activity
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
             //so close this activity
             finish();
-
-            //and open profile activity
-            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         }
 
     }
@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser !=null)
         {
-            //Start the ProfileActivity
+            //TODO: Start the ProfileActivity
         }
     }
     // [START onactivityresult]
@@ -148,18 +148,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             //redirect the user to the profile page
-                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-
-                            Log.d("",auth.getCurrentUser().toString());
+                            moveToProfileActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.activity_login), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-
                         }
 
                     }
                 });
+    }
+
+    private void moveToProfileActivity() {
+        startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+        Log.d("",auth.getCurrentUser().toString());
+        finish();
     }
     // [END auth_with_google]
 
@@ -191,8 +194,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 progressDialog.dismiss();
                             } else {
                                 //redirect the user to the main activity
-                                startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
-                                finish();
+                                moveToProfileActivity();
                                 progressDialog.dismiss();
                             }
                         }
