@@ -10,6 +10,9 @@ public class UserModel {
     public ArrayList<LocationModel> locations;
 
     public ArrayList<LocationModel> getLocations() {
+        if(locations == null){
+            locations = new ArrayList<>();
+        }
         return locations;
     }
 
