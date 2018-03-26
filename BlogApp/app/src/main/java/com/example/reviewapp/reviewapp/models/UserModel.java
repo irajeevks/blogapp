@@ -3,6 +3,7 @@ package com.example.reviewapp.reviewapp.models;
 import java.util.ArrayList;
 
 public class UserModel {
+    public String userName;
     public String phoneNumber;
     public String gender;
     public String birthDate;
@@ -57,8 +58,16 @@ public class UserModel {
         this.ratings = ratings;
     }
 
+    public String getUserName() {
+        return userName;
+    }
 
-    public UserModel(String phoneNumber, String gender, String birthDate, double ratings,ArrayList<LocationModel> locations) {
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public UserModel(String userName, String phoneNumber, String gender, String birthDate, double ratings, ArrayList<LocationModel> locations) {
+        this.userName = userName;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.birthDate = birthDate;

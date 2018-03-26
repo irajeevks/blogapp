@@ -19,19 +19,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
-
     private FirebaseAuth auth;
     private TextView btnSignIn;
     private Button btnResetPassword;
     private EditText emailEditText;
     ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
-        btnSignIn = (TextView) findViewById(R.id.btn_signin);
-        btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
-        emailEditText = (EditText) findViewById(R.id.txt_reset_textbox);
+        btnSignIn = findViewById(R.id.btn_signin);
+        btnResetPassword = findViewById(R.id.btn_reset_password);
+        emailEditText = findViewById(R.id.txt_reset_textbox);
 
         // [START initialize_auth]
         auth = FirebaseAuth.getInstance();
@@ -41,12 +41,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (TextUtils.isEmpty(emailEditText.getText()))
                 {
-                    Toast.makeText(ForgotPasswordActivity.this,"Email is required",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Email is required",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!Validation.isValidEmailAddress(emailEditText.getText().toString()))
                 {
-                    Toast.makeText(ForgotPasswordActivity.this,"Enter valid email address",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Enter valid email address",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 progressDialog = new ProgressDialog(ForgotPasswordActivity.this);
@@ -59,7 +59,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 progressDialog.dismiss();
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(ForgotPasswordActivity.this,"Email sent",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(),"Email sent",Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -69,6 +69,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(ForgotPasswordActivity.this,LoginActivity.class));
+                overridePendingTransition(R.anim.animation_enter_left, R.anim.animation_leave_right);
                 finish();
             }
         });

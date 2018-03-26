@@ -1,10 +1,7 @@
 package com.example.reviewapp.reviewapp.activities;
 
-import android.app.Application;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +32,7 @@ import java.util.Locale;
 public class ProfileActivity extends AppCompatActivity {
 
     private String[] gender = { "Male", "Female"};
+    private String userName;
     private ListView location_list;
     private ArrayList<LocationModel> loc_list;
     private ArrayList<String> locationStrings;
@@ -47,62 +45,28 @@ public class ProfileActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseUsers;
     private ArrayAdapter locationAdapter;
     Button btn_get_place;
-    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.example.reviewapp.reviewapp.R.layout.activity_profile);
-        btn_get_place = (Button) findViewById(R.id.btn_get_place);
-        location_list = (ListView)findViewById(R.id.location_list);
+        setContentView(R.layout.activity_profile);
+
+        btn_get_place = findViewById(R.id.btn_get_place);
+        location_list = findViewById(R.id.location_list);
         loc_list = new ArrayList();
         locationStrings = new ArrayList<>();
-        phoneNumber = (EditText)findViewById(R.id.txt_profile_phone_number);
-        save_profile = (Button)findViewById(R.id.btn_save_profile);
-        genderspinner = (Spinner)findViewById(R.id.genderspinner);
+        phoneNumber = findViewById(R.id.txt_profile_phone_number);
+        save_profile = findViewById(R.id.btn_save_profile);
+        genderspinner = findViewById(R.id.genderspinner);
+
         auth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
         locationAdapter = new ArrayAdapter<>(this,
                 R.layout.listview_item, locationStrings);
+
         final Calendar myCalendar = Calendar.getInstance();
-        final EditText edittext= (EditText) findViewById(R.id.Birthday);
-        final Button signOut = (Button) findViewById(R.id.btn_sign_out);
-
-        //cehck if the table does not exist then create table
-        //if table exist redirect to MainSwipeActivity
-        SQLiteDatabase mydatabase = openOrCreateDatabase("logins",MODE_PRIVATE,null);
-        if (tableExists(mydatabase,"login"))
-        {
-            String userid = auth.getCurrentUser().getUid();
-            progressDialog = new ProgressDialog(ProfileActivity.this);
-            progressDialog.setMessage("Loading Data...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-            mDatabaseUsers.child(userid).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    progressDialog.dismiss();
-                    UserModel userModel = dataSnapshot.getValue(UserModel.class);
-
-                    if(userModel != null){
-                        ApplicationController.getInstance().setUserModel(userModel);
-                        startActivity(new Intent(ProfileActivity.this, MainSwipeActivity.class));
-                        finish();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    progressDialog.dismiss();
-                }
-            });
-
-        }
-        else
-        {
-            mydatabase.execSQL("CREATE TABLE IF NOT EXISTS login(Username VARCHAR,Password VARCHAR);");
-        }
-
+        final EditText edittext= findViewById(R.id.Birthday);
+        final Button signOut = findViewById(R.id.btn_sign_out);
 
         // [START config_signin]
         // Configure Google Sign In
@@ -123,26 +87,24 @@ public class ProfileActivity extends AppCompatActivity {
                 location_list.setAdapter(locationAdapter);
             }
         });
+
         //Save The User Profile
         save_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //Validate all the properties.
                 String selectedGender = genderspinner.getSelectedItem().toString();
                 String selectedAge = edittext.getText().toString();
                 String phone = phoneNumber.getText().toString();
                 double ratings = 0;
-                if (loc_list.size()==0 || loc_list.size()>3)
-                {
+                if (loc_list.size()==0 || loc_list.size()>3) {
                     Toast.makeText(ProfileActivity.this, "Maximum 3 Locations Minimum 1 Location", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (auth.getCurrentUser() !=null)
-                {
+                if (auth.getCurrentUser() !=null) {
                     String userid = auth.getCurrentUser().getUid();
                     Toast.makeText(ProfileActivity.this, "Gender: "+selectedGender+" Age "+selectedAge+" Phone Number "+phone, Toast.LENGTH_LONG).show();
-                    UserModel user = new UserModel(phone,selectedGender,selectedAge,ratings,loc_list);
+                    UserModel user = new UserModel(userName, phone,selectedGender,selectedAge,ratings,loc_list);
                     mDatabaseUsers.child(userid).setValue(user);
                     ApplicationController.getInstance().setUserModel(user);
                     //goto the main swipe Activity
@@ -151,11 +113,11 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
         //Gender Spinner
         ArrayAdapter<String> adapter_state = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, gender);
-        adapter_state
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter_state.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderspinner.setAdapter(adapter_state);
         genderspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -229,7 +191,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void signOut() {
-
         // Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {
@@ -256,8 +217,7 @@ public class ProfileActivity extends AppCompatActivity {
     //This Activity will fire when user will select Location
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //User can only select maximum 3 locations
-        if (loc_list.size()<3)
-        {
+        if (loc_list.size()<3) {
             if (requestCode == PLACE_PICKER_REQUEST) {
                 if (resultCode == RESULT_OK) {
                     locationStrings.clear();
@@ -272,27 +232,9 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         }
-        else
-        {
+        else {
             Toast.makeText(this, "You can select maximum 3 locations", Toast.LENGTH_LONG).show();
         }
 
-    }
-
-    boolean tableExists(SQLiteDatabase db, String tableName)
-    {
-        if (tableName == null || db == null || !db.isOpen())
-        {
-            return false;
-        }
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?", new String[] {"table", tableName});
-        if (!cursor.moveToFirst())
-        {
-            cursor.close();
-            return false;
-        }
-        int count = cursor.getInt(0);
-        cursor.close();
-        return count > 0;
     }
 }

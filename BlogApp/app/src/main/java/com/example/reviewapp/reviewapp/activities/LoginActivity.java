@@ -2,16 +2,18 @@ package com.example.reviewapp.reviewapp.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.reviewapp.reviewapp.R;
 import com.example.reviewapp.reviewapp.utils.Validation;
@@ -19,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,7 +35,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
-    private RelativeLayout activity_login;
     private com.google.android.gms.common.SignInButton btngoogleLogin;
     ProgressDialog progressDialog;
     private FirebaseAuth auth;
@@ -41,23 +43,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.example.reviewapp.reviewapp.R.layout.activity_login);
+        setStatusBarTranslucent(true);
 
-        btnLgoin = (Button) findViewById(R.id.btn_login);
-        txtemail = (EditText) findViewById(R.id.txt_login_email);
-        txtpassword = (EditText) findViewById(R.id.txt_login_password);
-        btnSignUp = (TextView) findViewById(R.id.btn_signup);
-        btnForgotPass = (TextView) findViewById(R.id.btn_forgot_password);
-        btngoogleLogin = (com.google.android.gms.common.SignInButton) findViewById(R.id.google_sign_in);
-
-        activity_login = (RelativeLayout) findViewById(R.id.activity_login);
+        btnLgoin = findViewById(R.id.btn_login);
+        txtemail = findViewById(R.id.txt_login_email);
+        txtpassword = findViewById(R.id.txt_login_password);
+        btnSignUp = findViewById(R.id.btn_signup);
+        btnForgotPass = findViewById(R.id.btn_forgot_password);
+        btngoogleLogin = findViewById(R.id.google_sign_in);
 
         btnLgoin.setOnClickListener(this);
         btnSignUp.setOnClickListener(this);
         btnForgotPass.setOnClickListener(this);
         btngoogleLogin.setOnClickListener(this);
 
-
-
+        setGooglePlusButtonText(btngoogleLogin, "Sign in using Google account");
         // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -72,15 +72,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         auth = FirebaseAuth.getInstance();
         // [END initialize_auth]
 
-        //if getCurrentUser does not returns null
-        if(auth.getCurrentUser() != null){
-            //TODO : Get Data From DB
-            //that means user is already logged in
-            //open profile activity
-            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-            //so close this activity
-            finish();
-        }
 
     }
 
@@ -88,19 +79,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         if (view.getId() == R.id.btn_forgot_password) {
             startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+            overridePendingTransition(R.anim.animation_enter_right, R.anim.animation_leave_left);
             finish();
         } else if (view.getId() == R.id.btn_signup) {
             startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+            overridePendingTransition(R.anim.animation_enter_right, R.anim.animation_leave_left);
             finish();
         } else if (view.getId() == R.id.btn_login) {
             loginUser(txtemail.getText().toString(), txtpassword.getText().toString());
         }
-        else if (view.getId() == R.id.google_sign_in)
-        {
-            signIn();
+        else if (view.getId() == R.id.google_sign_in) {
+            googleSignIn();
         }
     }
 
+    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
+        // Find the TextView that is inside of the SignInButton and set its text
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
+
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(buttonText);
+                return;
+            }
+        }
+    }
     // [START on_start_check_user]
     @Override
     public void onStart() {
@@ -160,14 +164,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void moveToProfileActivity() {
+        //cehck if the table does not exist then create table
+        //if table exist redirect to MainSwipeActivity
+        SQLiteDatabase mydatabase = openOrCreateDatabase("logins", MODE_PRIVATE,null);
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS login(Email VARCHAR,Password VARCHAR);");
+
         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+        overridePendingTransition(R.anim.animation_enter_right, R.anim.animation_leave_left);
         Log.d("",auth.getCurrentUser().toString());
         finish();
     }
     // [END auth_with_google]
 
     // [START signin]
-    private void signIn() {
+    private void googleSignIn() {
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setMessage("LogIn...");
         progressDialog.setCancelable(false);
@@ -189,8 +199,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
-                                Snackbar snackbar = Snackbar.make(activity_login, "Incorrect username or password", Snackbar.LENGTH_SHORT);
-                                snackbar.show();
+                                Toast.makeText(getApplicationContext(), "Invalid email or password", Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                             } else {
                                 //redirect the user to the main activity
@@ -200,11 +209,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     });
         } else {
-            Snackbar snackbar = Snackbar.make(activity_login, "Invalid email address", Snackbar.LENGTH_SHORT);
-            snackbar.show();
+            Toast.makeText(getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-
+    protected void setStatusBarTranslucent(boolean makeTranslucent) {
+        if (makeTranslucent) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+    }
 }
