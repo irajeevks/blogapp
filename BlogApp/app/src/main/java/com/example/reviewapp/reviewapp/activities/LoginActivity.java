@@ -27,16 +27,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity {
 
     private Button btnLgoin;
     private EditText txtemail, txtpassword;
     private TextView btnSignUp, btnForgotPass;
     private GoogleSignInClient mGoogleSignInClient;
-    private static final String TAG = "GoogleActivity";
+    private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
-    private com.google.android.gms.common.SignInButton btngoogleLogin;
-    ProgressDialog progressDialog;
+    private com.google.android.gms.common.SignInButton btnGoogleLogin;
+    private ProgressDialog progressDialog;
     private FirebaseAuth auth;
 
     @Override
@@ -50,14 +50,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         txtpassword = findViewById(R.id.txt_login_password);
         btnSignUp = findViewById(R.id.btn_signup);
         btnForgotPass = findViewById(R.id.btn_forgot_password);
-        btngoogleLogin = findViewById(R.id.google_sign_in);
+        btnGoogleLogin = findViewById(R.id.google_sign_in);
 
-        btnLgoin.setOnClickListener(this);
-        btnSignUp.setOnClickListener(this);
-        btnForgotPass.setOnClickListener(this);
-        btngoogleLogin.setOnClickListener(this);
+        btnLgoin.setOnClickListener(onClickListener);
+        btnSignUp.setOnClickListener(onClickListener);
+        btnForgotPass.setOnClickListener(onClickListener);
+        btnGoogleLogin.setOnClickListener(onClickListener);
 
-        setGooglePlusButtonText(btngoogleLogin, "Sign in using Google account");
+        setGooglePlusButtonText(btnGoogleLogin, "Sign in using Google account");
         // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -75,23 +75,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btn_forgot_password) {
-            startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
-            overridePendingTransition(R.anim.animation_enter_right, R.anim.animation_leave_left);
-            finish();
-        } else if (view.getId() == R.id.btn_signup) {
-            startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
-            overridePendingTransition(R.anim.animation_enter_right, R.anim.animation_leave_left);
-            finish();
-        } else if (view.getId() == R.id.btn_login) {
-            loginUser(txtemail.getText().toString(), txtpassword.getText().toString());
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == R.id.btn_forgot_password) {
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+                overridePendingTransition(R.anim.animation_enter_right, R.anim.animation_leave_left);
+                finish();
+            } else if (view.getId() == R.id.btn_signup) {
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+                overridePendingTransition(R.anim.animation_enter_right, R.anim.animation_leave_left);
+                finish();
+            } else if (view.getId() == R.id.btn_login) {
+                loginUser(txtemail.getText().toString(), txtpassword.getText().toString());
+            } else if (view.getId() == R.id.google_sign_in) {
+                googleSignIn();
+            }
         }
-        else if (view.getId() == R.id.google_sign_in) {
-            googleSignIn();
-        }
-    }
+    };
 
     protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
         // Find the TextView that is inside of the SignInButton and set its text
@@ -105,17 +106,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
+
     // [START on_start_check_user]
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = auth.getCurrentUser();
-        if (currentUser !=null)
-        {
-            //TODO: Start the ProfileActivity
+        if (currentUser != null) {
+            moveToProfileActivity();
         }
     }
+
     // [START onactivityresult]
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -141,7 +143,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -166,12 +167,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void moveToProfileActivity() {
         //cehck if the table does not exist then create table
         //if table exist redirect to MainSwipeActivity
-        SQLiteDatabase mydatabase = openOrCreateDatabase("logins", MODE_PRIVATE,null);
+        SQLiteDatabase mydatabase = openOrCreateDatabase("logins", MODE_PRIVATE, null);
         mydatabase.execSQL("CREATE TABLE IF NOT EXISTS login(Email VARCHAR,Password VARCHAR);");
 
         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         overridePendingTransition(R.anim.animation_enter_right, R.anim.animation_leave_left);
-        Log.d("",auth.getCurrentUser().toString());
+        Log.d("", auth.getCurrentUser().toString());
         finish();
     }
     // [END auth_with_google]
