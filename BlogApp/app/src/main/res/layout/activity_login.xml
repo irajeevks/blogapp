@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/app_title"
+        android:id="@+id/screen_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/icon"
@@ -48,7 +48,7 @@
         android:textColor="@color/text_color"
         android:textSize="@dimen/sp_18"
         app:layout_constraintEnd_toEndOf="@+id/login_label_password"
-        app:layout_constraintTop_toBottomOf="@+id/app_title" />
+        app:layout_constraintTop_toBottomOf="@+id/screen_title" />
 
     <EditText
         android:id="@+id/txt_login_email"
