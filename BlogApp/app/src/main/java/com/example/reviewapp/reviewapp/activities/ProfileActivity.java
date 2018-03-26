@@ -31,7 +31,6 @@ import java.util.Locale;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private String[] gender = { "Male", "Female"};
     private String userName;
     private ListView location_list;
     private ArrayList<LocationModel> loc_list;
@@ -57,7 +56,7 @@ public class ProfileActivity extends AppCompatActivity {
         locationStrings = new ArrayList<>();
         phoneNumber = findViewById(R.id.txt_profile_phone_number);
         save_profile = findViewById(R.id.btn_save_profile);
-        genderspinner = findViewById(R.id.genderspinner);
+        genderspinner = findViewById(R.id.spinner_gender);
 
         auth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
@@ -65,8 +64,8 @@ public class ProfileActivity extends AppCompatActivity {
                 R.layout.listview_item, locationStrings);
 
         final Calendar myCalendar = Calendar.getInstance();
-        final EditText edittext= findViewById(R.id.Birthday);
-        final Button signOut = findViewById(R.id.btn_sign_out);
+        final EditText edittext= findViewById(R.id.et_date_selector);
+        //final Button signOut = findViewById(R.id.btn_sign_out);
 
         // [START config_signin]
         // Configure Google Sign In
@@ -115,10 +114,10 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         //Gender Spinner
-        ArrayAdapter<String> adapter_state = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, gender);
-        adapter_state.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        genderspinner.setAdapter(adapter_state);
+//        ArrayAdapter<String> adapter_state = new ArrayAdapter<String>(this,
+//                android.R.layout.simple_spinner_item, gender);
+//        adapter_state.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        genderspinner.setAdapter(adapter_state);
         genderspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
@@ -181,13 +180,13 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         //Sign out
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signOut();
-
-            }
-        });
+//        signOut.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                signOut();
+//
+//            }
+//        });
     }
 
     private void signOut() {
