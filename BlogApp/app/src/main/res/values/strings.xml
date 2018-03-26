@@ -24,6 +24,8 @@
     <string name="label_create_profile_info">Since this is your initial login, we have to record some information about you. \n\n
         Please select 3 locations that you would like to register to your profile, these locations will be used to filter query feed</string>
     <string name="label_edit">Edit</string>
+    <string name="save_profile">Save Profile</string>
+    <string name="label_create_profile_info_footer">Note: You can edit this information from the Profile section anytime!</string>
 
     <string-array name="gender_array">
         <item>Male</item>
