@@ -6,9 +6,18 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="lable_quick_query">Quick Query</string>
-    <string name="label_email">Email: </string>
-    <string name="label_password">Password: </string>
+    <string name="label_email">Email:</string>
+    <string name="label_email_mandatory">* Email:</string>
+    <string name="label_password">Password:</string>
+    <string name="label_password_mandatory">* Password:</string>
+    <string name="label_retype_password_mandatory">* Re-type Password:</string>
     <string name="label_sign_in">Sign In</string>
     <string name="label_forgot_password">Forgot Password?</string>
     <string name="label_register_here">Don\'t have an account yet? Register here!</string>
+    <string name="label_account_exists">Already have an account? Login</string>
+    <string name="label_request_new_password">Request New Password</string>
+    <string name="label_forget_password_title">Forgot Password</string>
+    <string name="label_enter_email_address">Enter Email Address:</string>
+    <string name="label_already_have_an_account">Already have an account? Login</string>
+    <string name="label_register_title">Register</string>
 </resources>
